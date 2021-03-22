@@ -21,9 +21,9 @@ func GetReport(args arguments.OutputArgs) (response dto.TogglDetailsResponse, er
 		}
 		query = map[string]string{
 			"workspace_id": args.WorkspaceID,
-			"user_agent": config.Get().AppVersion,
-			"since": args.DateFrom,
-			"until": args.DateTo,
+			"user_agent":   config.Get().AppVersion,
+			"since":        args.DateFrom,
+			"until":        args.DateTo,
 		}
 		headers = map[string]string{
 			"Authorization": c.BasicAuth(config.Get().TogglApiToken, "api_token"),

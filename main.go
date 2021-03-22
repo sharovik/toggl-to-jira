@@ -13,6 +13,7 @@ import (
 )
 
 var Cfg config.Config
+
 func init() {
 	Cfg = config.Init()
 	if err := log.Init(Cfg); err != nil {
@@ -85,7 +86,7 @@ func UpSertHistoryScenario(taskKey string, item dto.DataItem) (timeEntry time.Du
 			Str("added", item.Start.Format("2006-01-02")).
 			Msg("Inserting new history row")
 
-		if err := database.InsertTask(taskKey, item.Dur, item.Start.Format("2006-01-02")); err != nil  {
+		if err := database.InsertTask(taskKey, item.Dur, item.Start.Format("2006-01-02")); err != nil {
 			log.Logger().AddError(err).Msg("Failed to insert the history item!")
 			return timeEntry, err
 		}

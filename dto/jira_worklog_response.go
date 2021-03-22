@@ -32,15 +32,15 @@ type JiraWorkLogResponse struct {
 		Timezone    string `json:"timeZone"`
 		Accounttype string `json:"accountType"`
 	} `json:"updateAuthor"`
-	Created          string `json:"created"`
-	Updated          string `json:"updated"`
-	Started          string `json:"started"`
-	Timespent        string `json:"timeSpent"`
-	Timespentseconds int    `json:"timeSpentSeconds"`
-	ID               string `json:"id"`
-	Issueid          string `json:"issueId"`
-	Errormessages []string `json:"errorMessages"`
-	Errors        struct {
+	Created          string   `json:"created"`
+	Updated          string   `json:"updated"`
+	Started          string   `json:"started"`
+	Timespent        string   `json:"timeSpent"`
+	Timespentseconds int      `json:"timeSpentSeconds"`
+	ID               string   `json:"id"`
+	Issueid          string   `json:"issueId"`
+	Errormessages    []string `json:"errorMessages"`
+	Errors           struct {
 		Timelogged string `json:"timeLogged"`
 	} `json:"errors"`
 }

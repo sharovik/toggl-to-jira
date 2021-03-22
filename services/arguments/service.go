@@ -7,14 +7,14 @@ import (
 )
 
 const (
-	dateFromHelp = "The starting date for the filter export. Please use next format: YYYY-MM-DD"
-	dateToHelp = "The ending date for the filter export. Please use next format: YYYY-MM-DD"
+	dateFromHelp    = "The starting date for the filter export. Please use next format: YYYY-MM-DD"
+	dateToHelp      = "The ending date for the filter export. Please use next format: YYYY-MM-DD"
 	workspaceIDHelp = "The workspace ID which should be used for the toggl.track data report generation. By default will be used the ID from TOGGL_DEFAULT_WORKSPACE_ID environment variable."
 )
 
 type OutputArgs struct {
-	DateFrom string
-	DateTo string
+	DateFrom    string
+	DateTo      string
 	WorkspaceID string
 }
 

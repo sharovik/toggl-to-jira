@@ -34,7 +34,7 @@ func SendTheTime(taskKey string, timeStr string, date time.Time) error {
 	request := dto.JiraWorklogRequest{
 		Timespent: timeStr,
 		Comment: dto.Comment{
-			Type: "doc",
+			Type:    "doc",
 			Version: 1,
 			Content: []string{},
 		},

@@ -7,7 +7,7 @@ type JiraWorklogRequest struct {
 }
 
 type Comment struct {
-	Type    string        `json:"type"`
-	Version int           `json:"version"`
+	Type    string   `json:"type"`
+	Version int      `json:"version"`
 	Content []string `json:"content"`
 }

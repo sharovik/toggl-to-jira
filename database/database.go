@@ -14,10 +14,10 @@ const databaseInstallationDataSQLitePath = "./installation/install.sql"
 var DB *sql.DB
 
 type HistoryItem struct {
-	ID int64 `db:"id"`
-	TaskKey string `db:"task_key"`
-	Duration int64 `db:"duration"`
-	Added string `db:"added"`
+	ID       int64  `db:"id"`
+	TaskKey  string `db:"task_key"`
+	Duration int64  `db:"duration"`
+	Added    string `db:"added"`
 }
 
 func PrepareDatabase() {

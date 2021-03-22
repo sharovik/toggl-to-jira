@@ -9,8 +9,8 @@ type TogglDetailsResponse struct {
 		Currency string  `json:"currency"`
 		Amount   float64 `json:"amount"`
 	} `json:"total_currencies"`
-	TotalCount int `json:"total_count"`
-	PerPage    int `json:"per_page"`
+	TotalCount int        `json:"total_count"`
+	PerPage    int        `json:"per_page"`
 	Data       []DataItem `json:"data"`
 }
 
@@ -23,7 +23,7 @@ type DataItem struct {
 	Start           time.Time     `json:"start"`
 	End             time.Time     `json:"end"`
 	Updated         time.Time     `json:"updated"`
-	Dur             int64           `json:"dur"`
+	Dur             int64         `json:"dur"`
 	User            string        `json:"user"`
 	UseStop         bool          `json:"use_stop"`
 	Client          string        `json:"client"`
