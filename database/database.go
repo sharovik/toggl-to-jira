@@ -4,12 +4,10 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/sharovik/toggl-jira/log"
-	"io/ioutil"
 	"os"
 )
 
 const databaseHost = "./database.sqlite"
-const databaseInstallationDataSQLitePath = "./installation/install.sql"
 
 var DB *sql.DB
 
@@ -36,12 +34,6 @@ func PrepareDatabase() {
 
 	log.Logger().Info().Msg("Creating the database file")
 
-	_, err = os.Stat(databaseInstallationDataSQLitePath)
-	if err != nil {
-		log.Logger().AddError(err).Msg("Failed to find installation data")
-		return
-	}
-
 	_, err = os.Create(databaseHost)
 	if err != nil {
 		log.Logger().AddError(err).Msg("Failed to create database file")
@@ -54,13 +46,17 @@ func PrepareDatabase() {
 		return
 	}
 
-	installationData, err := ioutil.ReadFile(databaseInstallationDataSQLitePath)
-	if err != nil {
-		log.Logger().AddError(err).Msg("Failed to open installation file")
-		return
-	}
-
-	_, err = DB.Exec(string(installationData))
+	_, err = DB.Exec(`
+	-- auto-generated definition
+	create table history
+	(
+		id       integer
+			constraint history_pk
+				primary key autoincrement,
+		task_key varchar not null,
+		duration integer not null,
+		added    varchar not null
+	);`)
 	if err != nil {
 		log.Logger().AddError(err).Msg("Failed to install the data")
 		return
