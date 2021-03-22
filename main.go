@@ -35,6 +35,11 @@ func main() {
 		return
 	}
 
+	if len(report.Data) == 0 {
+		log.Logger().Info().Msg("No data in report.")
+		return
+	}
+
 	for _, item := range report.Data {
 		taskKey, err := jira.ParseTaskKey(item.Description)
 		if err != nil {
