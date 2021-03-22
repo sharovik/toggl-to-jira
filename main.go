@@ -83,7 +83,7 @@ func main() {
 func UpSertHistoryScenario(taskKey string, item dto.DataItem) (timeEntry time.Duration, err error) {
 	timeEntry = time.Duration(item.Dur) * time.Millisecond
 
-	historyItem, err := database.FindTask(taskKey, item.Start.Format("2006-01-02"))
+	historyItem, err := database.FindTask(taskKey, item.Dur, item.Start.Format("2006-01-02"))
 	if historyItem == (database.HistoryItem{}) {
 		log.Logger().Info().
 			Str("task_key", taskKey).
@@ -99,29 +99,11 @@ func UpSertHistoryScenario(taskKey string, item dto.DataItem) (timeEntry time.Du
 		return timeEntry, nil
 	}
 
-	if item.Dur == historyItem.Duration {
-		log.Logger().Info().
-			Str("task_key", taskKey).
-			Int64("duration", item.Dur).
-			Str("added", item.Start.Format("2006-01-02")).
-			Msg("This item was already processed. Ignoring.")
-
-		return 0, nil
-	}
-
 	log.Logger().Info().
 		Str("task_key", taskKey).
 		Int64("duration", item.Dur).
 		Str("added", item.Start.Format("2006-01-02")).
-		Msg("Updating the existing history row")
+		Msg("This item was already processed. Ignoring.")
 
-	timeEntry = time.Duration(item.Dur) * time.Millisecond
-
-	historyItem.Duration = historyItem.Duration + item.Dur
-	if err := database.UpdateHistoryItem(historyItem); err != nil {
-		log.Logger().AddError(err).Msg("Failed to update the history item!")
-		return timeEntry, err
-	}
-
-	return timeEntry, nil
+	return 0, nil
 }

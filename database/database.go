@@ -87,8 +87,8 @@ func UpdateHistoryItem(item HistoryItem) error {
 	return nil
 }
 
-func FindTask(taskKey string, added string) (item HistoryItem, err error) {
-	err = DB.QueryRow("select id, task_key, duration, added from history where task_key = $1 and added = $2 order by id desc limit 1", taskKey, added).
+func FindTask(taskKey string, duration int64, added string) (item HistoryItem, err error) {
+	err = DB.QueryRow("select id, task_key, duration, added from history where task_key = $1 and duration = $2 and added = $3 order by id desc limit 1", taskKey, duration, added).
 		Scan(&item.ID, &item.TaskKey, &item.Duration, &item.Added)
 	if err == sql.ErrNoRows {
 		return item, nil
