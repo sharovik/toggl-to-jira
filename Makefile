@@ -37,4 +37,9 @@ build:
 	make create-if-not-exists-env
 	go build -o ./bin/toggl-to-jira-osx ./main.go
 
+build-cp:
+	# For CROSS platform build there must be Docker installed.
+	docker pull karalabe/xgo-latest
+	env CGO_ENABLED=1 xgo --targets=darwin/*,linux/amd64,linux/386,windows/* --dest ./$(BIN_DIR)/ --out toggl-to-jira ./
+
 .PHONY: vendor
