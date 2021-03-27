@@ -22,16 +22,17 @@ func init() {
 		panic(err)
 	}
 
-	if err := validateConfiguration(); err != nil {
-		log.Logger().AddError(err).Msg("It looks like there are problems with config. Stop.")
-		os.Exit(0)
-	}
-
 	database.PrepareDatabase()
 }
 
 func main() {
 	args := arguments.ParseArgs()
+
+	if err := validateConfiguration(); err != nil {
+		log.Logger().AddError(err).Msg("It looks like there are problems with config. Stop.")
+		os.Exit(0)
+	}
+
 	if args.WorkspaceID == "" {
 		args.WorkspaceID = config.Get().TogglWorkspaceID
 	}

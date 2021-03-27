@@ -40,6 +40,15 @@ The main approach is:
 Please, also have a look at the flowchart diagram:
 ![flowchart](documentation/images/the-flow.jpg)
 
+## Available arguments
+  `-date_from` string
+        The starting date for the filter export. Please use next format: YYYY-MM-DD (default "2021-03-27")
+  `-date_to` string
+        The ending date for the filter export. Please use next format: YYYY-MM-DD (default "2021-03-27")
+  `-workspace_id` string
+        The workspace ID which should be used for the toggl.track data report generation. By default, will be used the ID from TOGGL_DEFAULT_WORKSPACE_ID environment variable.
+Please use `--help` for more details.
+
 ## When app ignore time entries from toggl.track?
 There are conditions, when we ignore the received time entry:
 
