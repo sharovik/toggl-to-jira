@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/sharovik/toggl-jira/config"
 	"github.com/sharovik/toggl-jira/database"
@@ -9,6 +10,7 @@ import (
 	"github.com/sharovik/toggl-jira/services/arguments"
 	"github.com/sharovik/toggl-jira/services/jira"
 	"github.com/sharovik/toggl-jira/services/toggl"
+	"os"
 	"time"
 )
 
@@ -18,6 +20,11 @@ func init() {
 	Cfg = config.Init()
 	if err := log.Init(Cfg); err != nil {
 		panic(err)
+	}
+
+	if err := validateConfiguration(); err != nil {
+		log.Logger().AddError(err).Msg("It looks like there are problems with config. Stop.")
+		os.Exit(0)
 	}
 
 	database.PrepareDatabase()
@@ -56,7 +63,7 @@ func main() {
 			continue
 		}
 
-		timeEntry, err := UpSertHistoryScenario(taskKey, item)
+		timeEntry, err := InsertHistoryScenario(taskKey, item)
 		if err != nil {
 			log.Logger().AddError(err).Msg("Failed to execute InsertHistoryScenario")
 			continue
@@ -80,7 +87,7 @@ func main() {
 	}
 }
 
-func UpSertHistoryScenario(taskKey string, item dto.DataItem) (timeEntry time.Duration, err error) {
+func InsertHistoryScenario(taskKey string, item dto.DataItem) (timeEntry time.Duration, err error) {
 	timeEntry = time.Duration(item.Dur) * time.Millisecond
 
 	historyItem, err := database.FindTask(taskKey, item.Dur, item.Start.Format("2006-01-02"))
@@ -106,4 +113,17 @@ func UpSertHistoryScenario(taskKey string, item dto.DataItem) (timeEntry time.Du
 		Msg("This item was already processed. Ignoring.")
 
 	return 0, nil
+}
+
+func validateConfiguration() error {
+	if config.Get().JiraBaseURL == "" ||
+		config.Get().JiraAppToken == "" ||
+		config.Get().JiraEmail == "" ||
+		config.Get().TogglApiToken == "" ||
+		config.Get().TogglApiURL == "" ||
+		config.Get().TogglWorkspaceID == "" {
+		return errors.New("One of the required items of configuration is missing. ")
+	}
+
+	return nil
 }
