@@ -2,7 +2,6 @@ package client
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -221,9 +220,6 @@ func (client HTTPClient) generateAPIUrl(endpoint string) string {
 func GetHttpClient() http.Client {
 	netTransport := &http.Transport{
 		TLSHandshakeTimeout: 7 * time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: true,
-		},
 	}
 
 	return http.Client{
