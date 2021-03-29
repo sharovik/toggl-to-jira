@@ -4,8 +4,8 @@ It is a small application which can be executed manually or via crontab. This ap
 
 ## Requirements
 As each application, my app also requires some things to be done, before the execution.
-1. You must have an account in Jira, so you can create the Jira auth token. [Click here to see how.](documentation/create-jira-auth-token.md)
-2. Create the toggl.track API token. [Click here to see how.](documentation/create-toggl-api-token.md)
+1. You must have an account in Jira, so you can create the Jira auth token. [Click here to see how to generate a token.](documentation/create-jira-auth-token.md)
+2. Create the toggl.track API token. [Click here to see how to create a token.](documentation/create-toggl-api-token.md)
 3. You should have installed the sqlite on your system.
     You can use this command for ubuntu
     ```
