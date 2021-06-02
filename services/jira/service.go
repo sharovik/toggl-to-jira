@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-const jiraTaskRegex = `([A-Z]+-(\d+))`
+const jiraTaskRegex = `([A-Z0-9]+-(\d+))`
 
 func ParseTaskKey(text string) (key string, err error) {
 	re, err := regexp.Compile(jiraTaskRegex)
