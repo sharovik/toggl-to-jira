@@ -1,6 +1,6 @@
 # Toggl.track to Jira
 
-It is a small application which can be executed manually or via crontab. This application will export your [toggl.track](https://toggl.com/track/) report for selected period to the work-logs of your Jira project. I wrote this app because I don't like the put my work-log time in Jira - it is annoying, and it can be automated.
+It is a small application which can be executed manually or via crontab. This application will export your [toggl.track](https://toggl.com/track/) report for selected period to the work-logs of your Jira project. I wrote this app because, I hate the Jira work-log UI. From my point of view it is useless and not really usefull. You could easily add a toggl.track browser extension and that will be better than this stupid "work-log" input form.
 
 ## Requirements
 As each application, my app also requires some things to be done, before the execution.
