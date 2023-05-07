@@ -1,6 +1,6 @@
 BIN_DIR=bin
 
-vendor:
+go-vendor:
 	if [ ! -d "vendor" ] || [ -z "$(shell ls -A vendor)" ]; then go mod vendor; fi
 
 code-check:
@@ -12,12 +12,8 @@ code-clean:
 	make format
 
 lint:
-	golint -set_exit_status ./clients/...
-	golint -set_exit_status ./config/...
-	golint -set_exit_status ./database/...
-	golint -set_exit_status ./dto/...
-	golint -set_exit_status ./log/...
-	golint -set_exit_status ./services/...
+	go install honnef.co/go/tools/cmd/staticcheck@latest
+	staticcheck ./src/...
 
 imports:
 	goimports -d -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
@@ -31,15 +27,26 @@ tests:
 create-if-not-exists-env:
 	if [ ! -f .env ]; then cp .env.example .env; fi
 
-
 build:
-	make vendor
+	make go-vendor
 	make create-if-not-exists-env
-	go build -o ./bin/toggl-to-jira-osx ./main.go
+	go build -o ./bin/toggl-to-jira ./main.go
 
 build-cp:
-	# For CROSS platform build there must be Docker installed.
-	docker pull karalabe/xgo-latest
-	env CGO_ENABLED=1 xgo --targets=darwin/*,linux/amd64,linux/386,windows/* --dest ./$(BIN_DIR)/ --out toggl-to-jira ./
+	make go-vendor
+	make create-if-not-exists-env
+	env GOOS=linux GOARCH=amd64 go build -ldflags="-extldflags=-static" -tags sqlite_omit_load_extension -o ./bin/toggl-to-jira-linux-amd64 ./main.go
+	env GOOS=linux GOARCH=386 go build -ldflags="-extldflags=-static" -tags sqlite_omit_load_extension -o ./bin/toggl-to-jira-linux-386 ./main.go
+	env GOOS=darwin GOARCH=amd64 go build -o ./bin/toggl-to-jira-darwin-amd64 ./main.go
+	env GOOS=windows GOARCH=amd64 go build -ldflags="-extldflags=-static" -tags sqlite_omit_load_extension -o ./bin/toggl-to-jira-windows-amd64.exe ./main.go
+	env GOOS=windows GOARCH=386 go build -ldflags="-extldflags=-static" -tags sqlite_omit_load_extension -o ./bin/toggl-to-jira-windows-386.exe ./main.go
+	chmod +x bin/*
 
-.PHONY: vendor
+check-security:
+	go install golang.org/x/vuln/cmd/govulncheck@latest
+	govulncheck ./...
+
+generate-mocks:
+	(which mockery || go install github.com/vektra/mockery/v2@latest)
+	mockery --all --dir=src --keeptree
+	make go-vendor
