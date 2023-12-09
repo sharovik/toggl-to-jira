@@ -2,3 +2,4 @@
 .env
 database.sqlite
 vendor
+bin
