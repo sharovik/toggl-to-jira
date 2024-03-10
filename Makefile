@@ -50,3 +50,7 @@ generate-mocks:
 	(which mockery || go install github.com/vektra/mockery/v2@latest)
 	mockery --all --dir=src --keeptree
 	make go-vendor
+
+release:
+	make build-cp
+	zip -r release.zip bin/*
