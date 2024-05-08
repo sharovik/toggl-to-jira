@@ -27,7 +27,7 @@ func TestTogglService_GetReport(t *testing.T) {
 	m := new(mocks.BaseHTTPClientInterface)
 	expectedEndpoint := "/reports/api/v2/details"
 	expectedHeaders := map[string]string{
-		"Authorization": "Og==",
+		"Authorization": "Basic Og==",
 	}
 
 	args := arguments.OutputArgs{
