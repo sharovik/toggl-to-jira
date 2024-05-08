@@ -32,7 +32,7 @@ func (s TogglService) GetReport(args arguments.OutputArgs) (response dto.TogglDe
 			"until":        args.DateTo,
 		}
 		headers = map[string]string{
-			"Authorization": s.Client.BasicAuth(config.Cfg.TogglApiToken, "api_token"),
+			"Authorization": fmt.Sprintf("Basic %s", s.Client.BasicAuth(config.Cfg.TogglApiToken, "api_token")),
 		}
 	)
 
