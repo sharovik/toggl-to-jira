@@ -1,8 +1,6 @@
 module github.com/sharovik/toggl-jira
 
-go 1.23.0
-
-toolchain go1.23.5
+go 1.24.3
 
 require (
 	github.com/joho/godotenv v1.5.1
