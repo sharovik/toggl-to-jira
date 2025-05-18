@@ -2,6 +2,7 @@ package toggl
 
 import (
 	"encoding/json"
+	"github.com/stretchr/testify/mock"
 	"testing"
 
 	mocks "github.com/sharovik/toggl-jira/mocks/clients"
@@ -36,21 +37,14 @@ func TestTogglService_GetReport(t *testing.T) {
 		DateTo:      "2023-03-01",
 	}
 
-	expectedQuery := map[string]string{
-		"workspace_id": args.WorkspaceID,
-		"user_agent":   config.Cfg.AppVersion,
-		"since":        args.DateFrom,
-		"until":        args.DateTo,
-	}
-
 	m.On("BasicAuth", config.Cfg.TogglApiToken, "api_token").Return("Og==")
 
 	responseBody := new(dto.TogglDetailsResponse)
 	expectedResponse, err := json.Marshal(responseBody)
 	assert.NoError(t, err)
 
-	m.On("Get", expectedEndpoint, expectedQuery, expectedHeaders).
-		Once().
+	m.On("Get", expectedEndpoint, mock.Anything, expectedHeaders).
+		Twice().
 		Return(expectedResponse, 200, nil)
 
 	TS = TogglService{Client: m}

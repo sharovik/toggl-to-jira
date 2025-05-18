@@ -85,9 +85,23 @@ func main() {
 			continue
 		}
 
+		if err = database.BeginTransaction(); err != nil {
+			log.Logger().AddError(err).Msg("Failed to begin transaction")
+
+			return
+		}
+
 		timeEntry, err := InsertHistoryScenario(taskKey, item)
 		if err != nil {
-			log.Logger().AddError(err).Msg("Failed to insert time entry")
+			if err.Error() != "item already processed" {
+				log.Logger().AddError(err).Msg("Failed to insert time entry")
+			}
+
+			if e := database.RollBackTransaction(); e != nil {
+				log.Logger().AddError(e).Msg("Failed to rollback transaction")
+
+				return
+			}
 			continue
 		}
 
@@ -98,11 +112,29 @@ func main() {
 				Int64("spent_in_minutes", spentMinutes).
 				Str("spent_total_time", timeEntry.String()).
 				Msg("Nothing to track.")
+
+			if e := database.RollBackTransaction(); e != nil {
+				log.Logger().AddError(e).Msg("Failed to rollback transaction")
+
+				return
+			}
+
 			continue
 		}
 
 		if err = jira.JS.SendTheTime(taskKey, fmt.Sprintf("%dm", spentMinutes), item.Start); err != nil {
 			log.Logger().AddError(err).Msg("Failed to send the worklog")
+			if e := database.RollBackTransaction(); e != nil {
+				log.Logger().AddError(e).Msg("Failed to rollback transaction")
+
+				return
+			}
+		}
+
+		if e := database.CommitTransaction(); e != nil {
+			log.Logger().AddError(e).Msg("Failed to rollback transaction")
+
+			return
 		}
 
 		time.Sleep(time.Duration(1) * time.Second)
@@ -125,7 +157,7 @@ func InsertHistoryScenario(taskKey string, item dto.DataItem) (timeEntry time.Du
 			Str("added", item.Start.Format("2006-01-02")).
 			Msg("This item was already processed. Ignoring.")
 
-		return 0, nil
+		return 0, errors.New("item already processed")
 	}
 
 	log.Logger().Info().

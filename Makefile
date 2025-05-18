@@ -27,20 +27,13 @@ tests:
 create-if-not-exists-env:
 	if [ ! -f .env ]; then cp .env.example .env; fi
 
-build:
+build-binary:
 	make go-vendor
 	make create-if-not-exists-env
 	go build -o ./bin/toggl-to-jira ./main.go
 
-build-cp:
-	make go-vendor
-	make create-if-not-exists-env
-	env GOOS=linux GOARCH=amd64 go build -ldflags="-extldflags=-static" -tags sqlite_omit_load_extension -o ./bin/toggl-to-jira-linux-amd64 ./main.go
-	env GOOS=linux GOARCH=386 go build -ldflags="-extldflags=-static" -tags sqlite_omit_load_extension -o ./bin/toggl-to-jira-linux-386 ./main.go
-	env GOOS=darwin GOARCH=amd64 go build -o ./bin/toggl-to-jira-darwin-amd64 ./main.go
-	env GOOS=windows GOARCH=amd64 go build -ldflags="-extldflags=-static" -tags sqlite_omit_load_extension -o ./bin/toggl-to-jira-windows-amd64.exe ./main.go
-	env GOOS=windows GOARCH=386 go build -ldflags="-extldflags=-static" -tags sqlite_omit_load_extension -o ./bin/toggl-to-jira-windows-386.exe ./main.go
-	chmod +x bin/*
+build:
+	docker build -t toggl-to-jira .
 
 check-security:
 	go install golang.org/x/vuln/cmd/govulncheck@latest

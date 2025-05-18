@@ -3,46 +3,50 @@
 It is a small application which can be executed manually or via crontab. This application will export your [toggl.track](https://toggl.com/track/) report for selected time period to the work-logs of your Jira project. 
 I wrote this app because, from my point of view the Jira work-log UI is not useful. You can install toggl.track browser extension and this will be way better than the "work-log" input form from Jira.
 
-## Requirements
-As each application, my app also requires some things to be done, before the execution.
-1. You must have an account in Jira, so you can create the Jira auth token. [Click here to see how.](src/documentation/create-jira-auth-token.md)
-2. Create the toggl.track API token. [Click here to see how.](src/documentation/create-toggl-api-token.md)
-
-## Installation 
-1. Go to [releases page](https://github.com/sharovik/toggl-to-jira/releases)
-2. Download the archive called `release.zip`, unzip it and select the binary for your operating system from the `bin` folder and copy it to the `~/toggl-to-jira` folder in your system. Of course, it is up to you, what kind of folder select.
-3. Make sure all required environment variables has been set in the `.env`
-4. Using Command line tool, please go to `~/toggl-to-jira`(or your path) and run the following command:
-   ``` 
-    ./toggl-to-jira-{system}
-   ```
-   Please note, that after start the app will try to fetch the time entries from toggl API and send it to the Jira API.
-   In my case there was no time entries to put in Jira, so here what I saw: 
-   ![app-dry-run](src/documentation/images/app-dry-run.png)
-   Done. 
-
-### Env configuration
-Recommendation is to copy contents from [.env.example](https://github.com/sharovik/toggl-to-jira/blob/master/.env.example) to the `.env` file in the `~/toggl-to-jira`(or your path) folder
-
-In this dummy contents you can see the following variables:
-
-#### For Toggl.track
-* `TOGGL_API_TOKEN` - [see here how to create the token](src/documentation/create-toggl-api-token.md) 
-* `TOGGL_API_URL` - the API URL https://api.track.toggl.com
-* `TOGGL_DEFAULT_WORKSPACE_ID` - just go to your toggl.track account and visit Reports page, there in the address URL you will see the ID. Here is an example `https://track.toggl.com/reports/summary/{WORKSPACE_ID}/period/thisWeek`
-
-#### For Jira
-* `JIRA_APP_TOKEN` - [click here to see how generate the token](src/documentation/create-jira-auth-token.md)
-* `JIRA_EMAIL` - your Jira account email
-* `JIRA_BASE_URL` - the workspace URL https://your-company.atlassian.net
 
 ## How it works
 The main approach is:
 1. We fetch the data from the toggl.track API using `/reports/api/v2/details?workspace_id={workspace_id}&user_agent={user_agent}&since={date_from}&until={date_to}`
 2. For each time entry we try to get the number of minutes and send the work log
 
-Please, also have a look at the flowchart diagram:
-![flowchart](src/documentation/images/the-flow.jpg)
+## Requirements
+As each application, my app also requires some things to be done, before the execution.
+1. You must have an account in Jira, so you can create the Jira auth token. [Click here to see how.](src/documentation/create-jira-auth-token.md)
+2. Create the toggl.track API token. [Click here to see how.](src/documentation/create-toggl-api-token.md)
+3. Docker should be installed
+
+## How to run 
+
+### Run using docker
+1. Clone the project
+2. Make sure all required environment variables has been set in the `.env`
+3. Trigger the following command `make build` or `docker build -t toggl-to-jira .` to build the image locally
+4. Once the image was created, you can use the container to trigger the command. Here is an example: `docker run toggl-to-jira -h`
+
+Note. If you want to expose the database file to the container, please mount the database.sqlite file when you run the container.
+```shell
+touch database.sqlite
+docker run -v $(pwd)/database.sqlite:/home/go/src/github.com/sharovik/toggl-to-jira/database.sqlite toggl-to-jira -h
+```
+Same thing you can do for `.env` file. Otherwise, your configuration and database files will be copied to the container once it is built.
+
+### Run using local binary
+To compile the binary please use the following command - `make build`. After that the binary of the tool will appear in the `bin` folder of this project and you will be able to use it.
+
+## Env configuration
+Recommendation is to copy contents from [.env.example](https://github.com/sharovik/toggl-to-jira/blob/master/.env.example) to the `.env` file in the `~/toggl-to-jira`(or your path) folder
+
+In this dummy contents you can see the following variables:
+
+### For Toggl.track
+* `TOGGL_API_TOKEN` - [see here how to create the token](src/documentation/create-toggl-api-token.md) 
+* `TOGGL_API_URL` - the API URL https://api.track.toggl.com
+* `TOGGL_DEFAULT_WORKSPACE_ID` - just go to your toggl.track account and visit Reports page, there in the address URL you will see the ID. Here is an example `https://track.toggl.com/reports/summary/{WORKSPACE_ID}/period/thisWeek`
+
+### For Jira
+* `JIRA_APP_TOKEN` - [click here to see how generate the token](src/documentation/create-jira-auth-token.md)
+* `JIRA_EMAIL` - your Jira account email
+* `JIRA_BASE_URL` - the workspace URL https://your-company.atlassian.net
 
 ## Available arguments
 1. `date_from` - The starting date for the filter export. Please use next format: YYYY-MM-DD (default "2021-03-27")
@@ -56,13 +60,9 @@ There are conditions, when the application ignore the received time entry:
 
 1. The app already processed the time entry
 2. In description of the time entry we could not find the Jira Task key. The task key example `KEY-1100`
-3. The number of minutes spent is less the 1
+3. The number of minutes spent is less the *1* minute
 
 ## Troubleshooting
-
-**Cannot run the app in MacOS Big Sur**
-1. Make sure you allow to application execution in `Security & Privacy` settings
-2. Make sure you move your application to the folder outside of base system folders. Eg: `~/Downloads` it is a system folder. Create a new folder in `~/` path and run the application from there.
 
 **I receive error "It looks like there are problems with config. Stop running the script"** 
 Please, make sure you defined all required environment variables. You can find the list of them in `.env.example`.

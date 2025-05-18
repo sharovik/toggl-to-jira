@@ -1,0 +1,9 @@
+.github
+vendor
+.idea
+.git
+
+LICENSE.md
+README.md
+SECURITY.md
+.env.example

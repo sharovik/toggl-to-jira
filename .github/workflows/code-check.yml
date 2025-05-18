@@ -15,10 +15,10 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21.12'
+          go-version: '1.24.3'
 
       - name: Build
-        run: make build
+        run: make build-binary
 
       - name: Code check
         run: make code-check
