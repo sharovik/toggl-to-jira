@@ -3,6 +3,7 @@
 It is a small application which can be executed manually or via crontab. This application will export your [toggl.track](https://toggl.com/track/) report for selected time period to the work-logs of your Jira project. 
 I wrote this app because, from my point of view the Jira work-log UI is not useful. You can install toggl.track browser extension and this will be way better than the "work-log" input form from Jira.
 
+
 ## How it works
 The main approach is:
 1. We fetch the data from the toggl.track API using `/reports/api/v2/details?workspace_id={workspace_id}&user_agent={user_agent}&since={date_from}&until={date_to}`
