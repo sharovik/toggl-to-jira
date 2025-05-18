@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/sharovik/orm/clients"
 	"github.com/sharovik/orm/dto"
@@ -29,6 +28,36 @@ func InsertTask(taskKey string, duration int64, added string) error {
 		Int64("duration", duration).
 		Str("added", added).
 		Msg("Inserted the history row")
+
+	return nil
+}
+
+func BeginTransaction() error {
+	q := new(clients.Query).BeginTransaction()
+	_, err := DB.Execute(q)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func CommitTransaction() error {
+	q := new(clients.Query).CommitTransaction()
+	_, err := DB.Execute(q)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RollBackTransaction() error {
+	q := new(clients.Query).RollbackTransaction()
+	_, err := DB.Execute(q)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
