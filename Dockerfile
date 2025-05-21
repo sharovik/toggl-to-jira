@@ -1,4 +1,4 @@
-FROM golang:alpine AS base
+FROM --platform=linux/amd64 golang:alpine AS base
 
 LABEL org.opencontainers.image.authors="sharovik89@ya.ru"
 
@@ -15,9 +15,9 @@ COPY . .
 
 RUN apk add --no-cache bash && apk add --no-cache make && apk add build-base && apk add --no-cache git
 
-RUN make build
+RUN make build-binary
 
-FROM alpine:latest AS run
+FROM --platform=linux/amd64 alpine:latest AS run
 RUN apk --no-cache add ca-certificates
 
 ENV APP_PATH="/home/go/src/github.com/sharovik/toggl-to-jira"
@@ -26,7 +26,7 @@ WORKDIR ${APP_PATH}
 
 COPY --from=base ${APP_PATH}/bin ${APP_PATH}/bin
 COPY --from=base ${APP_PATH}/.env ${APP_PATH}/.env
-COPY --from=base ${APP_PATH}/ ${APP_PATH}/database.sqlite
+COPY --from=base ${APP_PATH}/database.sqlite ${APP_PATH}/database.sqlite
 
 # Command to run when starting the container
 ENTRYPOINT ["./bin/toggl-to-jira"]

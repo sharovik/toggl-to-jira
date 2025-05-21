@@ -50,6 +50,7 @@ func (s TogglService) GetReport(args arguments.OutputArgs) (response dto.TogglDe
 			break
 		}
 
+		nextPage++
 		response.Data = append(response.Data, nextPageResponse.Data...)
 	}
 
